@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Onde vamos jantar?</title>
+  <meta name="description" content="Pick a mood, say when you're ready, and get a restaurant and a meeting plan for the group chat.">
+  <meta name="theme-color" content="#2340B0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='14' fill='%232340B0'/%3E%3Cpath d='M50 22 78 50 50 78 22 50Z' fill='none' stroke='%23FFC21A' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23FFC21A'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <h1>Onde vamos jantar?</h1>
+      <p class="lede">Pick a mood and say when you're ready. We'll choose the place and the meeting time, and you send it to the group.</p>
+    </header>
+
+    <!-- Shared plan (opened from a link someone sent) -->
+    <section id="shared" class="shared" hidden aria-live="polite"></section>
+
+    <form id="picker" class="picker" novalidate>
+      <section class="step" aria-labelledby="where-h">
+        <h2 id="where-h">Where are you?</h2>
+        <div class="where">
+          <button type="button" id="locate" class="btn btn-outline">Use my location</button>
+          <div class="area-search">
+            <label for="area" class="visually-hidden">Area or address</label>
+            <input id="area" type="search" placeholder="Or type an area, e.g. Chiado" autocomplete="off" enterkeyhint="search">
+            <button type="button" id="area-go" class="btn btn-outline">Search</button>
+          </div>
+        </div>
+        <ul id="area-results" class="area-results" hidden></ul>
+        <p id="where-status" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="step" aria-labelledby="mood-h">
+        <h2 id="mood-h">What's the mood?</h2>
+        <div id="moods" class="tiles" role="radiogroup" aria-labelledby="mood-h"></div>
+      </section>
+
+      <section class="step" aria-labelledby="when-h">
+        <h2 id="when-h">When are you ready?</h2>
+        <div class="when-grid">
+          <label class="field">
+            <span>Ready to leave at</span>
+            <input id="ready" type="time" step="300" required>
+          </label>
+          <fieldset class="field">
+            <legend>Getting there by</legend>
+            <div class="chips" id="mode">
+              <label><input type="radio" name="mode" value="walk" checked><span>Walking</span></label>
+              <label><input type="radio" name="mode" value="transit"><span>Metro / bus</span></label>
+              <label><input type="radio" name="mode" value="car"><span>Car / Uber</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="field">
+            <legend>How far are we willing to go?</legend>
+            <div class="chips" id="radius">
+              <label><input type="radio" name="radius" value="1000"><span>1 km</span></label>
+              <label><input type="radio" name="radius" value="2000" checked><span>2 km</span></label>
+              <label><input type="radio" name="radius" value="5000"><span>5 km</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="field">
+            <legend>Where do we meet?</legend>
+            <div class="chips chips-stack" id="style">
+              <label><input type="radio" name="style" value="auto" checked><span>At the restaurant <small>or for a drink nearby if it isn't open yet</small></span></label>
+              <label><input type="radio" name="style" value="drinks"><span>Drink first <small>at a bar close to the restaurant</small></span></label>
+              <label><input type="radio" name="style" value="straight"><span>Straight to dinner</span></label>
+            </div>
+          </fieldset>
+          <label class="check">
+            <input id="veggie" type="checkbox">
+            <span>Someone's vegetarian</span>
+          </label>
+        </div>
+      </section>
+
+      <button type="submit" id="go" class="btn btn-pick">Pick for us</button>
+      <p id="go-status" class="status" aria-live="polite"></p>
+    </form>
+
+    <section id="result" class="result" hidden aria-live="polite" tabindex="-1"></section>
+
+    <footer class="foot">
+      <p>Places and opening hours come from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. It has no star ratings, so tap “Check reviews” before you book.</p>
+    </footer>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
