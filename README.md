@@ -33,12 +33,15 @@ because browsers block modules and location access on `file://` pages.
 OpenStreetMap has no star ratings. Picks are weighted toward good matches with complete
 listings (hours, website, cuisine), not reviews.
 
-## Using it on phones with friends
+## Deploying
 
-The message the app sends already contains Google Maps links, so friends don't need the app.
-If you want everyone to open the app itself, put this folder on any free static host
-(GitHub Pages, Cloudflare Pages, Netlify). Over https, shared messages also include a link that
-opens the plan directly.
+The `Dockerfile` serves the site with nginx on **port 3000**. There's no build step and no backend.
+Point your server or deploy tool at this repo and let it build the Dockerfile.
+
+Serve it over **https**: phones only allow "Use my location" on secure pages, and shared
+messages only include a link back to the plan when the app runs on https.
+
+The message the app sends already contains Google Maps links, so friends don't need the app open to follow the plan.
 
 ## Tests
 
