@@ -156,6 +156,6 @@ test('shared plan link round-trips, including accents', () => {
   assert.equal(hhmm(back.plan.dinnerAt), '19:30');
   assert.equal(decodePlan('not-a-plan'), null);
   const txt = shareText(back.plan, 'https://example.test/#p=x');
-  assert.match(txt, /Meet 19:00 at Bar Next Door/);
-  assert.match(txt, /Dinner 19:30/);
+  assert.match(txt, /Encontro às 19:00 em Bar Next Door/);
+  assert.match(txt, /Jantar às 19:30/);
 });

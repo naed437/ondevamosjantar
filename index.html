@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-PT">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Onde vamos jantar?</title>
-  <meta name="description" content="Pick a mood, say when you're ready, and get a restaurant and a meeting plan for the group chat.">
+  <meta name="description" content="Escolhe o ambiente e a hora. A app escolhe o restaurante e onde se encontram, e tu mandas para o grupo.">
   <meta name="theme-color" content="#2340B0">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='14' fill='%232340B0'/%3E%3Cpath d='M50 22 78 50 50 78 22 50Z' fill='none' stroke='%23FFC21A' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23FFC21A'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,78 +17,103 @@
   <main class="wrap">
     <header class="hero">
       <h1>Onde vamos jantar?</h1>
-      <p class="lede">Pick a mood and say when you're ready. We'll choose the place and the meeting time, and you send it to the group.</p>
+      <p class="lede">Escolhe o ambiente e diz a que horas estás pronto. Nós escolhemos o restaurante e a hora de encontro. Tu só tens de mandar para o grupo.</p>
     </header>
 
-    <!-- Shared plan (opened from a link someone sent) -->
+    <!-- Plano partilhado (aberto a partir de um link) -->
     <section id="shared" class="shared" hidden aria-live="polite"></section>
 
     <form id="picker" class="picker" novalidate>
       <section class="step" aria-labelledby="where-h">
-        <h2 id="where-h">Where are you?</h2>
-        <div class="where">
-          <button type="button" id="locate" class="btn btn-outline">Use my location</button>
-          <div class="area-search">
-            <label for="area" class="visually-hidden">Area or address</label>
-            <input id="area" type="search" placeholder="Or type an area, e.g. Chiado" autocomplete="off" enterkeyhint="search">
-            <button type="button" id="area-go" class="btn btn-outline">Search</button>
-          </div>
+        <h2 id="where-h">Onde estás?</h2>
+
+        <div id="where-set" class="where-set" hidden>
+          <svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>
+          <span>Perto de <strong id="where-label"></strong></span>
+          <button type="button" id="where-change" class="link-btn">Mudar</button>
         </div>
-        <ul id="area-results" class="area-results" hidden></ul>
+
+        <div id="where-pick" class="where">
+          <button type="button" id="locate" class="btn btn-outline">
+            <svg class="pin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>
+            Usar a minha localização
+          </button>
+          <div class="area-search">
+            <label for="area" class="visually-hidden">Zona ou morada</label>
+            <input id="area" type="search" placeholder="Ou escreve uma zona, ex.: Chiado" autocomplete="off" enterkeyhint="search">
+            <button type="button" id="area-go" class="btn btn-outline">Procurar</button>
+          </div>
+          <ul id="area-results" class="area-results" hidden></ul>
+        </div>
         <p id="where-status" class="status" aria-live="polite"></p>
       </section>
 
       <section class="step" aria-labelledby="mood-h">
-        <h2 id="mood-h">What's the mood?</h2>
+        <h2 id="mood-h">Que ambiente?</h2>
         <div id="moods" class="tiles" role="radiogroup" aria-labelledby="mood-h"></div>
       </section>
 
       <section class="step" aria-labelledby="when-h">
-        <h2 id="when-h">When are you ready?</h2>
-        <div class="when-grid">
-          <label class="field">
-            <span>Ready to leave at</span>
-            <input id="ready" type="time" step="300" required>
-          </label>
-          <fieldset class="field">
-            <legend>Getting there by</legend>
-            <div class="chips" id="mode">
-              <label><input type="radio" name="mode" value="walk" checked><span>Walking</span></label>
-              <label><input type="radio" name="mode" value="transit"><span>Metro / bus</span></label>
-              <label><input type="radio" name="mode" value="car"><span>Car / Uber</span></label>
-            </div>
-          </fieldset>
-          <fieldset class="field">
-            <legend>How far are we willing to go?</legend>
-            <div class="chips" id="radius">
-              <label><input type="radio" name="radius" value="1000"><span>1 km</span></label>
-              <label><input type="radio" name="radius" value="2000" checked><span>2 km</span></label>
-              <label><input type="radio" name="radius" value="5000"><span>5 km</span></label>
-            </div>
-          </fieldset>
-          <fieldset class="field">
-            <legend>Where do we meet?</legend>
-            <div class="chips chips-stack" id="style">
-              <label><input type="radio" name="style" value="auto" checked><span>At the restaurant <small>or for a drink nearby if it isn't open yet</small></span></label>
-              <label><input type="radio" name="style" value="drinks"><span>Drink first <small>at a bar close to the restaurant</small></span></label>
-              <label><input type="radio" name="style" value="straight"><span>Straight to dinner</span></label>
-            </div>
-          </fieldset>
-          <label class="check">
-            <input id="veggie" type="checkbox">
-            <span>Someone's vegetarian</span>
+        <h2 id="when-h">A que horas estás pronto?</h2>
+        <div class="when-row">
+          <div class="chips" id="time-chips" role="radiogroup" aria-labelledby="when-h"></div>
+          <label class="time-other">
+            <span>Outra hora</span>
+            <input id="ready" type="time" step="300">
           </label>
         </div>
+
+        <details class="more" id="more">
+          <summary>
+            <span class="more-title">Mais opções</span>
+            <span class="more-summary" id="more-summary"></span>
+          </summary>
+          <div class="more-body">
+            <fieldset class="field">
+              <legend>Como vão?</legend>
+              <div class="chips">
+                <label><input type="radio" name="mode" value="walk" checked><span>A pé</span></label>
+                <label><input type="radio" name="mode" value="transit"><span>Metro / autocarro</span></label>
+                <label><input type="radio" name="mode" value="car"><span>Carro / Uber</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="field">
+              <legend>Até onde?</legend>
+              <div class="chips">
+                <label><input type="radio" name="radius" value="1000"><span>1 km</span></label>
+                <label><input type="radio" name="radius" value="2000" checked><span>2 km</span></label>
+                <label><input type="radio" name="radius" value="5000"><span>5 km</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="field">
+              <legend>Onde se encontram?</legend>
+              <div class="chips chips-stack">
+                <label><input type="radio" name="style" value="auto" checked><span>No restaurante <small>ou num bar perto, se ainda não tiver aberto</small></span></label>
+                <label><input type="radio" name="style" value="drinks"><span>Primeiro um copo <small>num bar perto do restaurante</small></span></label>
+                <label><input type="radio" name="style" value="straight"><span>Direto ao jantar</span></label>
+              </div>
+            </fieldset>
+            <label class="check">
+              <input id="veggie" type="checkbox">
+              <span>Há alguém vegetariano</span>
+            </label>
+          </div>
+        </details>
       </section>
 
-      <button type="submit" id="go" class="btn btn-pick">Pick for us</button>
-      <p id="go-status" class="status" aria-live="polite"></p>
+      <div class="pick-bar">
+        <p id="go-status" class="status" aria-live="polite"></p>
+        <button type="submit" id="go" class="btn btn-pick">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="go-label">Escolher por nós</span>
+        </button>
+      </div>
     </form>
 
     <section id="result" class="result" hidden aria-live="polite" tabindex="-1"></section>
 
     <footer class="foot">
-      <p>Places and opening hours come from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors. It has no star ratings, so tap “Check reviews” before you book.</p>
+      <p>Os restaurantes e horários vêm dos contribuidores do <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>. Não há estrelas nem avaliações, por isso toca em “Ver avaliações” antes de reservar.</p>
     </footer>
   </main>
 
